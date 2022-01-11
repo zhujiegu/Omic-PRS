@@ -1,0 +1,30 @@
+plink2 \
+  --threads 4 \
+  --memory 5000 \
+  --vcf 1000G_P3V5_PID_chr21.dose.vcf.gz dosage=DS \
+  --make-pgen \
+  --geno 0.1 \
+  --maf 0.05 \
+  --mind 0.1 \
+  --snps-only just-acgt \
+  --minimac3-r2-filter 0.7 \
+  --export A \
+  --out ../plink_file/chr21_tes
+
+
+
+for i in 1:23
+do
+   plink2 \
+  --threads 10 \
+  --memory 10000 \
+  --vcf 1000G_P3V5_PID_chr21.dose.vcf.gz dosage=DS \
+  --make-pgen \
+  --geno 0.1 \
+  --maf 0.05 \
+  --mind 0.1 \
+  --snps-only just-acgt \
+  --minimac3-r2-filter 0.7 \
+  --export A \
+  --out ../plink_file/chr21_tes
+done
