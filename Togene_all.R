@@ -18,7 +18,7 @@ for(k in 1:23){
   
   ## --------------------------------------------------------------------------------
   # remove meta data from matrix
-  sample_id <- dat$FID
+  sample_id <- dat$IID
   dat <- dat[,-(1:6)]
   
   # get position from colname

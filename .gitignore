@@ -4,3 +4,17 @@
 .Ruserdata
 *.pdf
 *.Rproj
+*.fam
+*.psam
+*.log
+*.Rds
+*.rds
+*.best
+*.mismatch
+*.prsice
+*.summary
+*.valid
+*.all_score
+*.png
+*.RData
+*.xlsx

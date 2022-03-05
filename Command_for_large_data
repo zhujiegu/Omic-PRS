@@ -1,0 +1,12 @@
+# cut the first 6 columns
+for i in {1..22}
+do
+cut -d$'\t' -f 7- chr${i}.raw > ./temp/chr${i}.raw
+done
+
+# combine columns
+paste chr* -d$'\t' > chr_all.raw
+
+# split training and test 
+awk 'NR==FNR{data[$1]; next}FNR in data' row_training chr_all.raw > chr_all_training.raw
+awk 'NR==FNR{data[$1]; next}FNR in data' row_test chr_all.raw > chr_all_test.raw
