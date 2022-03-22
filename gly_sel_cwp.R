@@ -5,12 +5,18 @@ gly <- data.frame(IID=row.names(gly), gly)
 
 id <- read.table('id_A_decpl.txt')
 
+covar <- read.table('Covar.txt', header = T)
+
 cwp <- readRDS('cwp_all.rds')
 colnames(cwp)[1] <- 'IID'
 
-gly <- merge(gly, cwp, by="IID")
+cwp <- merge(cwp, gly, by="IID")
+cwp <- merge(cwp, covar, by='IID')
+
+gly <- merge(gly, cwp, by='IID')
 
 test <- glm(case~.-IID, data = gly, family = 'binomial')
+test <- glm(case~.-IID, data = cwp, family = 'binomial')
 
 p <- c()
 # univariate
@@ -19,9 +25,15 @@ for (i in 1:76) {
   p[i] <- summ$coefficients[2,4]
 }
 
+for (i in 1:76) {
+  summ <- glm(paste('case~', colnames(gly)[i+1], '+Sex+Age+Alc+Smk+Bmi'), data = cwp, family = 'binomial') %>% summary
+  p[i] <- summ$coefficients[2,4]
+}
+
+
 p <- data.frame(IID = colnames(gly)[2:77], p=p)
 
-gly_sel <- p %>% filter(p < 0.01)
+gly_sel <- p %>% filter(p < 0.1)
 gly_sel
 
 ##################################################################
@@ -51,4 +63,6 @@ for(i in 1:nrow(gly_sel)){
 
 ##################################################################
 # total SNP for these glycans with p-value <0.01
-SNP_list %>% unique %>% length  # 93000
+SNP_list <- SNP_list %>% unique
+SNP_list %>% length  # 93000
+saveRDS(SNP_list, file = 'SNPs_gly.rds')

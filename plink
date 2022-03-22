@@ -7,7 +7,7 @@ plink2 \
   --geno 0.1 \
   --maf 0.05 \
   --mind 0.1 \
-  --snps-only just-acgt \
+  --snps-only just-acgt \                        
   --minimac3-r2-filter 0.7 \
   --export A \
   --rm-dup exclude-mismatch\
@@ -18,7 +18,7 @@ plink2 \
 for i in {1..22}
 do
    plink2 \
-  --threads 50 \
+  --threads 80 \
   --memory 10000 \
   --vcf 1000G_P3V5_PID_chr${i}.dose.vcf.gz dosage=DS \
   --make-pgen \
@@ -27,10 +27,33 @@ do
   --maf 0.05 \
   --mind 0.1 \
   --snps-only just-acgt \
-  --minimac3-r2-filter 0.7 \
+  --minimac3-r2-filter 0.9 \
+  --hwe 1e-06 \
   --export A \
   --rm-dup exclude-mismatch\
-  --out ../plink_file/chr${i}
+  --out ../plink2_file/chr${i}
+done
+
+# clump r2 0.1
+for i in {1..22}
+do
+   plink2 \
+  --threads 80 \
+  --memory 10000 \
+  --vcf 1000G_P3V5_PID_chr${i}.dose.vcf.gz dosage=DS \
+  --make-pgen \
+  --keep id_AB.txt \
+  --geno 0.1 \
+  --maf 0.05 \
+  --mind 0.1 \
+  --snps-only just-acgt \
+  --minimac3-r2-filter 0.9 \
+  --hwe 1e-06 \
+  --clump-r2 0.1 \
+  --clump-kb 250 \
+  --export A \
+  --rm-dup exclude-mismatch\
+  --out ../plink2_file/chr${i}
 done
 
 ###############################################################

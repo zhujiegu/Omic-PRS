@@ -1,7 +1,7 @@
 library(OmicsPLS)
 library(PO2PLS)
 
-load('Intl_snp_gly_training.RData')
+load('Intl_snp_gly_sel_training.RData')
 
 dim(dat)
 ## scree plot
@@ -17,7 +17,28 @@ d2 <- svd(t(gly)%*%(gly), 0, 0)$d#[-1]
 # plot(d2/sum(d2), main="Glycomics Scree plot")
 # plot(cumsum(d2)/sum(d2))
 
-save(d,d1,d2, file='eigenval_scree_snp.RData')
+save(d,d1,d2, file='eigenval_scree_snp_sel.RData')
+
+###############################################
+# # Genetic data with all snps, glycan data with selected 13 glycans
+# 
+# load('Intl_snp_gly_training.RData')
+# 
+# dim(dat)
+# ## scree plot
+# fit <- o2m(dat, gly, 12, 0,0, p_thresh = 1, stripped = T)
+# D <- (t(fit$W.) %*% t(dat)) %*% (gly %*% fit$C.)
+# d <- diag(D)#[-1]
+# # plot(cumsum(d)/sum(d))
+# 
+# d1 <- svd(dat%*%t(dat), 0, 0)$d#[-1]
+# #plot(cumsum(d2)/sum(d2))
+# 
+# d2 <- svd(t(gly)%*%(gly), 0, 0)$d#[-1]
+# # plot(d2/sum(d2), main="Glycomics Scree plot")
+# # plot(cumsum(d2)/sum(d2))
+# 
+# save(d,d1,d2, file='eigenval_scree_snp.RData')
 
 ###############################################
 # 
@@ -39,7 +60,7 @@ save(d,d1,d2, file='eigenval_scree_snp.RData')
 # save(d,d1,d2, file='eigenval_scree.RData')
 # 
 # ###############################################
-load('eigenval_scree_snp.RData')
+load('eigenval_scree_snp_sel.RData')
 
 cairo_pdf(file = 'scree_plot.pdf', width = 12, height =6,
           onefile = T, fallback_resolution = 600)

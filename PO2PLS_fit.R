@@ -2,15 +2,15 @@ library(PO2PLS)
 library(OmicsPLS)
 library(dplyr)
 
-load('Intl_gene_gly.RData')
-r=2
-rx=3
-ry=3
+load('Intl_gene_gly_original.RData')
+r=5
+rx=5
+ry=0
 
 fit_po2 <- PO2PLS(gene, gly, r,rx,ry,init_param = 'o2m', tol = 0.1)
-saveRDS(fit_po2, file=paste('fit_po',r,rx,ry,'.rds', sep = ''))
+saveRDS(fit_po2, file=paste('fit_po_22gly',r,rx,ry,'.rds', sep = ''))
 
-fit_po2 <- readRDS('fit_po2.rds')
+# fit_po2 <- readRDS('fit_po2.rds')
 sd_B <- variances_inner.po2m(fit_po2, gene, gly)
 z_B <- fit_po2$parameters$B %>% diag / sd_B
 p_B <- 2*(1-pnorm(z_B))
@@ -39,6 +39,6 @@ print('t % in u')
 fit_po2$parameters$SigU <- with(fit_po2$parameters, SigT %*% B^2 + SigH)
 with(fit_po2$parameters, SigT %*% B^2 %*% solve(SigU))
 
-saveRDS(jointPC, file=paste('jointPC_',r,rx,ry,'.rds', sep = ''))
+# saveRDS(jointPC, file=paste('jointPC_',r,rx,ry,'.rds', sep = ''))
 
 cor(Tt,U)

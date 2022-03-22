@@ -1,6 +1,7 @@
 library(dplyr)
 library(magrittr)
 library(DescTools)
+library(ggplot2)
 library(pROC)
 
 
@@ -23,7 +24,16 @@ prs_gly %<>% select(starts_with('IGP'))
 prs_gly %<>% mutate(IID=IID, .before='IGP49')
 prs_gly %>% head
 
-cwp <- Reduce(merge, list(cwp, prs, prs_gly, covar))
+# (S)(P)O2PLS joint components
+Tt <- readRDS('Tp_sel_test.rds')
+# Ttt <- readRDS('T_sel_test.rds') #O2PLS on selected SNPs
+# Tttt <- readRDS('T_test.rds') # SO2PLS on all SNPs
+Tt <- as_tibble(Tt)
+colnames(Tt) <- c('T1','T2','T3')
+T_id <- read.table('psam_test', header = T)
+Tt <- bind_cols(T_id, Tt)
+
+cwp <- Reduce(merge, list(cwp, prs, Tt, prs_gly, covar))
 
 # AUC plot function
 auc_plot_test <- function(fit_obj){
@@ -49,10 +59,15 @@ auc_plot_test(fit_prs)
 
 
 # covariates + PRS_cwp + PRS_gly
-fit_prss <- glm(case~.-IID, data = cwp, family = 'binomial')
+fit_prss <- glm(case~T1+T2+T3, data = cwp, family = 'binomial')
 fit_prss %>% summary
 PseudoR2(fit_prss,'Nagelkerke')
 auc_plot_test(fit_prss)
 
 
+# covariates + PRS_cwp + jointPC
+fit_prso2 <- glm(case~Bmi, data = cwp, family = 'binomial')
+fit_prso2 %>% summary
+PseudoR2(fit_prso2,'Nagelkerke')
+auc_plot_test(fit_prso2)
 
