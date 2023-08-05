@@ -17,7 +17,9 @@
 ## Data analysis
 ### `Analysis_steps`: steps for analysis, containing some plink and PRSice commands
 ### R files:
--	`bmi_explore.R`: preprocessing the outcome BMI
+- `gly_process.R`, `mtb_process.R`: read raw glycomics and metabolomics data and preprocess
+-	`bmi_explore.R`, `db2_explore.R`: preprocessing the outcome BMI, Type II diabetes
+- `GWAS_stats_process.R`, `GWAS_stats_process_bash`: formatting downloaded GWAS
 -	`overlapping_id.R`: extract sample with omics and outcome, split into training and test
 -	`combine_gene_gly`: preprocess genetic and glycan data, ready for O2PLS
 -	`SNP_PCA.R`: summarise SNP data to GPC data

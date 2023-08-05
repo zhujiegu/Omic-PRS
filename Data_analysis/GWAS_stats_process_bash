@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# !! use SNP_screen_HPC.R to further process the snp list before using PCA
+
+# Metabolomics Kettunen2016
+# add chr:pos column
+for i in Summary_*
+do
+(out=${i#"Summary_statistics_MAGNETIC_"}
+out=${out%".txt.gz"}
+out='gwas'_$out
+echo $out
+zcat $i | awk 'NR==1{$12="SNPpos";print;next} {$12=$1":"$2}1' > $out) &
+done
+wait
+
+# filtering SNP based on p-value
+for i in gwas_*
+do
+(out=${i#"gwas_"}
+awk '$9 < 5e-8 {print $3,$12}' $i > snp_${out}_5e-8) &
+done 
+wait
+
+####################################
+# glycomics
+# filtering SNP based on p-value
+for i in GWAS_IGP*
+do
+(out=${i#"GWAS_"}
+awk '$8 < 5e-8 {print $1,$12}' $i > snp_${out}_5e-8) &
+done 
+wait
+
+
+####################################
+# BMI
+# filtering SNP based on p-value
+awk '$9 < 5e-8 {print $3}' Meta-analysis_Locke_et_al+UKBiobank_2018_UPDATED.txt > snp_BMI_5e08
