@@ -1,0 +1,79 @@
+# QC
+for i in {1..22}
+do
+   plink2 \
+  --threads 80 \
+  --memory 10000 \
+  --vcf 1000G_P3V5_PID_chr${i}.dose.vcf.gz dosage=DS \
+  --make-bed \
+  --keep id_all_bmi.txt \
+  --extract ./prune05/chr${i}_prune05.prune.in \
+  --export A \
+  --rm-dup exclude-mismatch \
+  --out ../BMI/dat_per_chr/chr${i}
+done
+
+# merge
+for i in {1..22}
+do
+echo chr${i} >> mergelist.txt
+done
+
+plink --merge-list mergelist.txt --make-bed --out chr_all
+
+# Run SNP_PCA
+
+# fit O2PLS/PO2PLS in training
+
+# PRS of bmi
+Rscript PRSice.R --dir . \
+    --prsice PRSice_linux \
+    --base ./GWAS_stats/GWAS_BMI.txt --snp SNP --chr CHR --bp POS --A1 Tested_Allele --A2 Other_Allele --stat BETA --pvalue P \
+    --beta \
+    --binary-target F \
+    --bar-levels 1e-10,1e-9,1e-8,1e-7,1e-6,1e-5,1e-4,1e-3,0.01,0.1,1 --fastscore \
+    --target chr_all_unpruned \
+    --thread 10 \
+    --binary-target F \
+    --keep id_all_bmi.txt \
+    --no-regress \
+    --ignore-fid \
+    --out ./fit_files/PRS_bmi \
+    --extract PRSice.valid 
+
+# PRS of each glycan
+for i in {1..23}
+do
+Rscript PRSice.R --dir . \
+    --prsice PRSice_linux \
+    --base ./GWAS_stats/GWAS_IGP_${i}_edit --snp SNP --chr Chr --bp Pos --A1 effect_allele --A2 other_allele --stat effect --pvalue p \
+    --beta \
+    --binary-target F \
+    --bar-levels 1e-10,1e-9,1e-8,1e-7,1e-6,1e-5,1e-4,1e-3,0.01,0.1,1 --fastscore \
+    --target chr_all_unpruned \
+    --thread 10 \
+    --keep id_all_bmi.txt \
+    --no-regress \
+    --ignore-fid \
+    --out ./fit_files/PRS_IGP${i} \
+    --extract ./fit_files/PRS_IGP${i}.valid 
+done/
+
+# PRS of each metabolites
+for i in `cat /hpc/julius_bs/bs_omics/NMR_GWAS/mtb_sel_names`
+do
+Rscript PRSice.R --dir . \
+    --thread 80 \
+    --prsice PRSice_linux \
+    --base /hpc/julius_bs/bs_omics/NMR_GWAS/gwas_${i} --snp SNPpos --chr chromosome --bp position --A1 EA --A2 NEA --stat beta --pvalue p-value \
+    --beta \
+    --binary-target F \
+    --bar-levels 1e-10,1e-9,1e-8,1e-7,1e-6,1e-5,1e-4,1e-3,0.01,0.1,1 --fastscore \
+    --target chr_all_unpruned \
+    --keep id_all_bmi.txt \
+    --no-regress \
+    --ignore-fid \
+    --out ./fit_files_mtb/PRS_${i}
+done
+
+# evaluate performance of all methods in 'bmi_predict.R'
