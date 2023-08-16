@@ -23,11 +23,11 @@
 -	`overlapping_id.R`: extract sample with omics and outcome, split into training and test
 -	`combine_gene_gly`: preprocess genetic and glycan data, ready for O2PLS
 -	`SNP_PCA.R`: summarise SNP data to GPC data
--	`gly_bmi.R`: select glycan peaks that are significantly associated with BMI
+-	`gly(metb)_bmi.R`: select glycan peaks/metabolites that are significantly associated with BMI
 -	`Nr_comp_bmi.R`: determine and number of components for O2PLS methods
 -	`bmi_predict.R`: performance of predicting BMI of all the methods
--	`O2PLS_gly_fit_1000.R`: fit O2PLS methods (without PO2PLS)
--	`PO2PLS_gly_fit_1000.R`: fit PO2PLS
+-	`O2PLS_gly(mtb)_fit_1000.R`: fit O2PLS methods (without PO2PLS) on genetics and glycomics/metabolomics
+-	`PO2PLS_gly(mtb)_fit_1000.R`: fit PO2PLS on genetics and glycomics/metabolomics
 -	`PO2PLS_fit_rx.R`: investigating the impact of the number of x-specific component
 ### sh files:
 -	`run_Nr_comp.sh`: run Nr_comp_bmi.R
